@@ -1,0 +1,558 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Advanced Batman Design System - Red & Black Professional Theme
+All colors, gradients, fonts, animations, and effects defined here.
+All colors MUST be HSL for maximum compatibility and theming.
+*/
+
+@layer base {
+  :root {
+    /* Core color system */
+    --background: 0 0% 4%; /* Deep batman black */
+    --foreground: 0 0% 95%; /* Clean white text */
+
+    --card: 0 0% 8%; /* Card background with slight gray */
+    --card-foreground: 0 0% 92%; /* Card text */
+
+    --popover: 0 0% 6%; /* Darker popover */
+    --popover-foreground: 0 0% 95%; /* Popover text */
+
+    --primary: 0 85% 58%; /* Batman crimson red */
+    --primary-foreground: 0 0% 98%; /* White on red */
+
+    --secondary: 0 0% 12%; /* Dark charcoal */
+    --secondary-foreground: 0 0% 85%; /* Light gray text */
+
+    --muted: 0 0% 10%; /* Muted backgrounds */
+    --muted-foreground: 0 0% 65%; /* Muted text */
+
+    --accent: 0 75% 45%; /* Darker red accent */
+    --accent-foreground: 0 0% 95%; /* White on accent */
+
+    --destructive: 0 95% 68%; /* Bright warning red */
+    --destructive-foreground: 0 0% 98%; /* White on destructive */
+
+    --border: 0 0% 15%; /* Subtle borders */
+    --input: 0 0% 12%; /* Input backgrounds */
+    --ring: 0 85% 58%; /* Focus rings */
+
+    --radius: 0.75rem; /* Rounded corners */
+
+    /* Sidebar system colors */
+    --sidebar-background: 0 0% 6%; /* Darker sidebar */
+    --sidebar-foreground: 0 0% 90%; /* Sidebar text */
+    --sidebar-primary: 0 85% 58%; /* Red sidebar accents */
+    --sidebar-primary-foreground: 0 0% 98%; /* White on sidebar primary */
+    --sidebar-accent: 0 0% 10%; /* Sidebar hover states */
+    --sidebar-accent-foreground: 0 85% 58%; /* Red text on sidebar accent */
+    --sidebar-border: 0 0% 12%; /* Sidebar borders */
+    --sidebar-ring: 0 85% 58%; /* Sidebar focus rings */
+
+    /* Advanced color extensions */
+    --batman-crimson: 0 85% 58%; /* Primary batman red */
+    --batman-dark-red: 0 75% 45%; /* Darker red variant */
+    --batman-blood: 0 95% 35%; /* Deep blood red */
+    --batman-charcoal: 0 0% 8%; /* Main dark color */
+    --batman-obsidian: 0 0% 4%; /* Deepest black */
+    --batman-steel: 0 0% 15%; /* Steel gray accents */
+    --batman-ember: 15 85% 55%; /* Orange-red ember */
+    --batman-gold: 45 95% 60%; /* Gold accents */
+
+    /* Glass morphism variables */
+    --glass-bg: 0 0% 8%; /* Base glass color */
+    --glass-opacity: 0.7; /* Glass transparency */
+    --glass-border: 0 0% 100%; /* Glass border color */
+    --glass-border-opacity: 0.1; /* Border transparency */
+    --glass-blur: 16px; /* Backdrop blur amount */
+    --glass-saturate: 180%; /* Color saturation boost */
+
+    /* Advanced gradient definitions */
+    --gradient-primary: linear-gradient(135deg, 
+      hsl(var(--batman-crimson)) 0%, 
+      hsl(var(--batman-dark-red)) 50%, 
+      hsl(var(--batman-blood)) 100%);
+    
+    --gradient-secondary: linear-gradient(180deg, 
+      hsl(var(--batman-charcoal)) 0%, 
+      hsl(var(--batman-obsidian)) 100%);
+    
+    --gradient-glass: linear-gradient(135deg, 
+      hsla(var(--glass-bg), calc(var(--glass-opacity) + 0.1)) 0%, 
+      hsla(var(--glass-bg), var(--glass-opacity)) 25%,
+      hsla(var(--batman-steel), calc(var(--glass-opacity) - 0.2)) 50%,
+      hsla(var(--batman-obsidian), calc(var(--glass-opacity) + 0.2)) 100%);
+    
+    --gradient-glass-hover: linear-gradient(135deg, 
+      hsla(var(--batman-crimson), 0.15) 0%, 
+      hsla(var(--glass-bg), calc(var(--glass-opacity) + 0.1)) 25%,
+      hsla(var(--batman-dark-red), 0.08) 50%,
+      hsla(var(--batman-obsidian), calc(var(--glass-opacity) + 0.2)) 100%);
+    
+    --gradient-radial: radial-gradient(circle at center, 
+      hsl(var(--batman-crimson)) 0%, 
+      hsl(var(--batman-dark-red)) 70%, 
+      transparent 100%);
+    
+    --gradient-conic: conic-gradient(from 0deg, 
+      hsl(var(--batman-crimson)), 
+      hsl(var(--batman-ember)), 
+      hsl(var(--batman-crimson)));
+
+    /* Advanced shadow system */
+    --shadow-xs: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
+    --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -4px hsl(0 0% 0% / 0.1);
+    --shadow-xl: 0 20px 25px -5px hsl(0 0% 0% / 0.1), 0 8px 10px -6px hsl(0 0% 0% / 0.1);
+    --shadow-2xl: 0 25px 50px -12px hsl(0 0% 0% / 0.25);
+    --shadow-inner: inset 0 2px 4px 0 hsl(0 0% 0% / 0.05);
+
+    /* Batman-specific shadows */
+    --shadow-batman-glow: 0 0 20px hsl(var(--batman-crimson) / 0.5);
+    --shadow-batman-intense: 0 8px 32px -8px hsl(var(--batman-crimson) / 0.6);
+    --shadow-batman-subtle: 0 4px 16px -4px hsl(var(--batman-crimson) / 0.3);
+    --shadow-glass: 
+      0 8px 32px -8px hsl(0 0% 0% / 0.7),
+      0 2px 16px -2px hsl(var(--batman-crimson) / 0.2),
+      inset 0 1px 2px hsl(0 0% 100% / 0.05);
+    --shadow-glass-hover: 
+      0 16px 48px -8px hsl(var(--batman-crimson) / 0.4),
+      0 4px 24px -4px hsl(0 0% 0% / 0.8),
+      inset 0 1px 2px hsl(0 0% 100% / 0.1);
+
+    /* Animation timing functions */
+    --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+    --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-in-out-circ: cubic-bezier(0.85, 0, 0.15, 1);
+    --ease-batman: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+    /* Typography scale */
+    --font-display: 'Orbitron', monospace; /* Futuristic headings */
+    --font-body: 'Inter', system-ui, sans-serif; /* Clean body text */
+    --font-mono: 'JetBrains Mono', monospace; /* Code and data */
+
+    /* Spacing scale (multiplied by base unit) */
+    --space-unit: 0.25rem; /* 4px base unit */
+
+    /* Motion system */
+    --motion-duration-fast: 150ms;
+    --motion-duration-normal: 300ms;
+    --motion-duration-slow: 500ms;
+    --motion-duration-slower: 800ms;
+
+    /* Backdrop filter presets */
+    --backdrop-blur-sm: blur(4px) saturate(150%);
+    --backdrop-blur-md: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    --backdrop-blur-lg: blur(24px) saturate(200%);
+    --backdrop-blur-xl: blur(32px) saturate(220%);
+  }
+
+  .dark {
+    /* Enhanced dark mode with deeper blacks and brighter reds */
+    --background: 0 0% 2%; /* Even deeper background */
+    --foreground: 0 0% 98%; /* Brighter text */
+
+    --card: 0 0% 6%; /* Slightly lighter cards in dark mode */
+    --card-foreground: 0 0% 95%;
+
+    --batman-crimson: 0 90% 65%; /* Brighter red in dark mode */
+    --batman-ember: 15 90% 65%; /* Brighter ember */
+    
+    --glass-opacity: 0.8; /* More opacity in dark mode */
+    --glass-border-opacity: 0.15; /* More visible borders */
+
+    --shadow-batman-glow: 0 0 30px hsl(var(--batman-crimson) / 0.7);
+    --shadow-batman-intense: 0 12px 48px -8px hsl(var(--batman-crimson) / 0.8);
+  }
+
+  /* Light mode overrides (for testing/accessibility) */
+  .light {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 8%;
+    --batman-crimson: 0 80% 45%; /* Darker red for light mode */
+    --glass-bg: 0 0% 100%;
+    --glass-opacity: 0.6;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: var(--font-body);
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    /* Advanced background with multiple layers */
+    background: 
+      /* Subtle noise texture */
+      radial-gradient(circle at 25% 75%, hsl(var(--batman-crimson) / 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 25%, hsl(var(--batman-dark-red) / 0.05) 0%, transparent 50%),
+      /* Base gradient */
+      linear-gradient(180deg, 
+        hsl(var(--background)) 0%, 
+        hsl(var(--batman-obsidian)) 100%);
+    background-attachment: fixed;
+    background-size: 100% 100%, 100% 100%, 100% 100%;
+    
+    /* Typography improvements */
+    font-feature-settings: 'cv01', 'cv02', 'cv03', 'cv04', 'kern';
+    font-variant-ligatures: contextual;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Typography hierarchy */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+  }
+
+  h1 { font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 800; }
+  h2 { font-size: clamp(1.75rem, 3.5vw, 2.75rem); font-weight: 700; }
+  h3 { font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 600; }
+  h4 { font-size: clamp(1.25rem, 2.5vw, 1.875rem); font-weight: 600; }
+  h5 { font-size: clamp(1.125rem, 2vw, 1.5rem); font-weight: 500; }
+  h6 { font-size: clamp(1rem, 1.5vw, 1.25rem); font-weight: 500; }
+
+  /* Enhanced form elements */
+  input, textarea, select {
+    font-family: var(--font-body);
+  }
+
+  code, pre {
+    font-family: var(--font-mono);
+  }
+
+  /* Enhanced selection */
+  ::selection {
+    background: hsl(var(--batman-crimson) / 0.3);
+    color: hsl(var(--foreground));
+    text-shadow: none;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, 
+      hsl(var(--batman-crimson)), 
+      hsl(var(--batman-dark-red)));
+    border-radius: 4px;
+    border: 1px solid hsl(var(--batman-obsidian));
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, 
+      hsl(var(--batman-crimson)), 
+      hsl(var(--batman-ember)));
+    box-shadow: var(--shadow-batman-subtle);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: hsl(var(--background));
+  }
+}
+
+@layer components {
+  /* Advanced glass morphism system */
+  .glass {
+    background: var(--gradient-glass);
+    backdrop-filter: var(--backdrop-blur-md);
+    -webkit-backdrop-filter: var(--backdrop-blur-md);
+    border: 1px solid hsl(var(--glass-border) / var(--glass-border-opacity));
+    box-shadow: var(--shadow-glass);
+    transition: all var(--motion-duration-normal) var(--ease-batman);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glass::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      hsl(var(--glass-border) / 0.3) 50%, 
+      transparent 100%);
+    opacity: 0.8;
+  }
+
+  .glass:hover {
+    background: var(--gradient-glass-hover);
+    box-shadow: var(--shadow-glass-hover);
+    border-color: hsl(var(--batman-crimson) / 0.3);
+    transform: translateY(-2px) scale(1.005);
+  }
+
+  .glass:active {
+    transform: translateY(0) scale(0.998);
+    transition-duration: var(--motion-duration-fast);
+  }
+
+  /* Enhanced button system */
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center px-6 py-3 font-medium rounded-lg overflow-hidden;
+    background: var(--gradient-primary);
+    color: hsl(var(--primary-foreground));
+    font-family: var(--font-body);
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    box-shadow: var(--shadow-batman-subtle);
+    transition: all var(--motion-duration-normal) var(--ease-out-expo);
+    transform-style: preserve-3d;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      hsl(0 0% 100% / 0.25) 50%, 
+      transparent 100%);
+    transition: left var(--motion-duration-slower) var(--ease-out-expo);
+  }
+
+  .btn-primary:hover {
+    box-shadow: var(--shadow-batman-intense);
+    transform: translateY(-3px) translateZ(10px);
+  }
+
+  .btn-primary:hover::before {
+    left: 100%;
+  }
+
+  .btn-primary:active {
+    transform: translateY(-1px) translateZ(5px);
+    transition-duration: var(--motion-duration-fast);
+  }
+
+  .btn-ghost {
+    @apply relative inline-flex items-center justify-center px-6 py-3 font-medium rounded-lg;
+    background: hsla(var(--batman-charcoal), 0.4);
+    backdrop-filter: var(--backdrop-blur-sm);
+    -webkit-backdrop-filter: var(--backdrop-blur-sm);
+    border: 1px solid hsl(var(--batman-crimson) / 0.3);
+    color: hsl(var(--batman-crimson));
+    font-family: var(--font-body);
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    transition: all var(--motion-duration-normal) var(--ease-batman);
+  }
+
+  .btn-ghost:hover {
+    background: hsla(var(--batman-crimson), 0.1);
+    border-color: hsl(var(--batman-crimson) / 0.6);
+    box-shadow: var(--shadow-batman-glow);
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost:active {
+    transform: translateY(0);
+    background: hsla(var(--batman-crimson), 0.2);
+  }
+
+  /* Advanced input system */
+  .input-glass {
+    @apply w-full px-4 py-3 rounded-lg border transition-all duration-300;
+    background: hsla(var(--batman-charcoal), 0.6);
+    backdrop-filter: var(--backdrop-blur-sm);
+    -webkit-backdrop-filter: var(--backdrop-blur-sm);
+    border: 1px solid hsl(var(--glass-border) / var(--glass-border-opacity));
+    color: hsl(var(--foreground));
+    font-family: var(--font-body);
+    font-weight: 400;
+  }
+
+  .input-glass:focus {
+    outline: none;
+    border-color: hsl(var(--batman-crimson));
+    box-shadow: 
+      0 0 0 3px hsl(var(--batman-crimson) / 0.2),
+      var(--shadow-batman-subtle);
+    background: hsla(var(--batman-charcoal), 0.8);
+  }
+
+  .input-glass::placeholder {
+    color: hsl(var(--muted-foreground) / 0.7);
+  }
+
+  /* Card system */
+  .card-batman {
+    @apply glass rounded-xl p-6;
+  }
+
+  .card-interactive {
+    @apply card-batman cursor-pointer;
+    transition: all var(--motion-duration-normal) var(--ease-out-back);
+  }
+
+  .card-interactive:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 
+      var(--shadow-glass-hover),
+      var(--shadow-batman-glow);
+  }
+
+  /* Utility classes */
+  .text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+  }
+
+  .border-gradient {
+    border: 2px solid transparent;
+    background: 
+      linear-gradient(hsl(var(--background)), hsl(var(--background))) padding-box,
+      var(--gradient-primary) border-box;
+  }
+
+  .glow-batman {
+    position: relative;
+    z-index: 1;
+  }
+
+  .glow-batman::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: var(--gradient-primary);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity var(--motion-duration-normal) var(--ease-batman);
+    filter: blur(8px);
+  }
+
+  .glow-batman:hover::after {
+    opacity: 0.8;
+  }
+
+  /* Animation classes */
+  .animate-fade-in {
+    animation: fadeIn var(--motion-duration-slow) var(--ease-out-expo) forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp var(--motion-duration-slower) var(--ease-out-expo) forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn var(--motion-duration-normal) var(--ease-out-back) forwards;
+  }
+
+  .animate-glow-pulse {
+    animation: glowPulse 2s var(--ease-in-out-circ) infinite;
+  }
+
+  /* Loading states */
+  .loading-spinner {
+    @apply w-8 h-8 border-2 border-current border-t-transparent rounded-full;
+    animation: spin 1s linear infinite;
+    color: hsl(var(--batman-crimson));
+  }
+
+  /* Ripple effect */
+  .ripple-effect {
+    position: relative;
+    overflow: hidden;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .ripple-effect::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: hsla(var(--batman-crimson), 0.4);
+    transform: translate(-50%, -50%);
+    transition: 
+      width var(--motion-duration-slower) var(--ease-out-expo),
+      height var(--motion-duration-slower) var(--ease-out-expo);
+  }
+
+  .ripple-effect:active::before {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+/* Advanced keyframe animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: var(--shadow-batman-subtle);
+  }
+  50% {
+    box-shadow: var(--shadow-batman-glow);
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
