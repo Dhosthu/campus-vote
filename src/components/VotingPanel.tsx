@@ -29,15 +29,16 @@ export function VotingPanel({ student, onVoteSuccess }: VotingPanelProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [currentStep, setCurrentStep] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
+  const [isTimeUp, setIsTimeUp] = useState(false);
+  const getRandomDelay = () => Math.floor(Math.random() * 3000) + 1000; // 1-4 seconds
 
-  // Make positions array more type-safe
+  // Updated positions array without president and treasurer, in the specified order
   const positions: Position[] = [
-    'president_candidate_id',
     'vice_president_candidate_id',
     'secretary_candidate_id',
     'associate_secretary_candidate_id',
     'joint_secretary_candidate_id',
-    'treasurer_candidate_id',
     'joint_treasurer_candidate_id'
   ];
 
@@ -55,6 +56,33 @@ export function VotingPanel({ student, onVoteSuccess }: VotingPanelProps) {
   // Helper function to get position name for candidate filtering
   const getPositionName = (positionKey: Position): string => {
     return positionKey.replace('_candidate_id', '');
+  };
+
+  // Timer effect
+  useEffect(() => {
+    if (timeLeft > 0 && !isTimeUp) {
+      const timer = setTimeout(() => {
+        setTimeLeft(timeLeft - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (timeLeft === 0) {
+      setIsTimeUp(true);
+      setError('Time is up! Please submit your vote immediately or it will be lost.');
+    }
+  }, [timeLeft, isTimeUp]);
+
+  // Format time display
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // Get timer color based on remaining time
+  const getTimerColor = () => {
+    if (timeLeft <= 60) return 'text-white bg-red-600 border border-red-400';
+    if (timeLeft <= 120) return 'text-white bg-orange-600 border border-orange-400';
+    return 'text-white bg-green-600 border border-green-400';
   };
 
   useEffect(() => {
@@ -76,6 +104,10 @@ export function VotingPanel({ student, onVoteSuccess }: VotingPanelProps) {
   };
 
   const handleVoteChange = (position: Position, candidateId: string) => {
+    if (isTimeUp) {
+      setError('Time is up! Cannot change votes anymore.');
+      return;
+    }
     setVotes(prev => ({
       ...prev,
       [position]: candidateId
@@ -83,6 +115,11 @@ export function VotingPanel({ student, onVoteSuccess }: VotingPanelProps) {
   };
 
   const handleNext = () => {
+    if (isTimeUp) {
+      setError('Time is up! Please submit your vote immediately.');
+      return;
+    }
+    
     const currentPosition = positions[currentStep];
     if (!votes[currentPosition]) {
       setError(`Please select a candidate for ${positionTitles[currentPosition]}`);
@@ -95,6 +132,11 @@ export function VotingPanel({ student, onVoteSuccess }: VotingPanelProps) {
   };
 
   const handlePrevious = () => {
+    if (isTimeUp) {
+      setError('Time is up! Please submit your vote immediately.');
+      return;
+    }
+    
     setError('');
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
@@ -102,45 +144,61 @@ export function VotingPanel({ student, onVoteSuccess }: VotingPanelProps) {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Check if all positions are voted for
-    for (const position of positions) {
-      if (!votes[position]) {
-        setError(`Please select a candidate for ${positionTitles[position]}`);
-        return;
-      }
+  e.preventDefault();
+  
+  // Check if all active positions are voted for
+  for (const position of positions) {
+    if (!votes[position]) {
+      setError(`Please select a candidate for ${positionTitles[position]}`);
+      return;
+    }
+  }
+
+  setLoading(true);
+  setError('');
+
+  try {
+    // Show loading state with random delay
+    const delay = getRandomDelay();
+    await new Promise(resolve => setTimeout(resolve, delay));
+
+    // Filter out empty vote fields before submission
+    const voteData = Object.fromEntries(
+      Object.entries(votes).filter(([key, value]) => value && value.trim() !== '')
+    );
+
+    // Submit vote with only the positions that have votes
+    const { error: voteError } = await supabase
+      .from('votes')
+      .insert({
+        student_registration_number: student.registration_number,
+        ...voteData
+      });
+
+    if (voteError) {
+      console.error('Vote submission error:', voteError);
+      throw voteError;
     }
 
-    setLoading(true);
-    setError('');
+    // Update student's voting status
+    const { error: updateError } = await supabase
+      .from('students')
+      .update({ has_voted: true })
+      .eq('registration_number', student.registration_number);
 
-    try {
-      // Submit vote
-      const { error: voteError } = await supabase
-        .from('votes')
-        .insert({
-          student_registration_number: student.registration_number,
-          ...votes
-        });
-
-      if (voteError) throw voteError;
-
-      // Update student's voting status
-      const { error: updateError } = await supabase
-        .from('students')
-        .update({ has_voted: true })
-        .eq('registration_number', student.registration_number);
-
-      if (updateError) throw updateError;
-
-      onVoteSuccess(votes);
-    } catch (err) {
-      setError('Failed to submit vote. Please try again.');
-    } finally {
-      setLoading(false);
+    if (updateError) {
+      console.error('Student update error:', updateError);
+      throw updateError;
     }
-  };
+
+    onVoteSuccess(votes);
+  } catch (err) {
+    console.error('Submission error:', err);
+    setError('Failed to submit vote. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const groupedCandidates = candidates.reduce((acc, candidate) => {
     const position = candidate.position;
@@ -158,6 +216,13 @@ export function VotingPanel({ student, onVoteSuccess }: VotingPanelProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10 p-4">
       <div className="max-w-4xl mx-auto">
+        {/* Timer - Outside the card */}
+        <div className="flex justify-end mb-2">
+          <div className={`px-3 py-2 rounded-lg text-sm font-mono font-bold ${getTimerColor()}`}>
+            {formatTime(timeLeft)}
+          </div>
+        </div>
+
         {/* Progress Header */}
         <Card className="mb-6">
           <CardHeader>
@@ -167,6 +232,34 @@ export function VotingPanel({ student, onVoteSuccess }: VotingPanelProps) {
             </CardDescription>
           </CardHeader>
         </Card>
+
+        {/* Time Warning Notifications */}
+        {timeLeft <= 120 && timeLeft > 60 && (
+          <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-right duration-500">
+            <div className="bg-orange-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center space-x-2">
+              <span>⚠️</span>
+              <span className="font-medium">2 minutes remaining!</span>
+            </div>
+          </div>
+        )}
+        
+        {timeLeft <= 60 && timeLeft > 30 && (
+          <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-right duration-500">
+            <div className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center space-x-2 animate-pulse">
+              <span>⏰</span>
+              <span className="font-medium">1 minute left!</span>
+            </div>
+          </div>
+        )}
+        
+        {timeLeft <= 30 && timeLeft > 0 && (
+          <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-right duration-500">
+            <div className="bg-black text-white px-4 py-2 rounded-lg shadow-lg border border-red-500 flex items-center space-x-2 animate-bounce">
+              <span>🚨</span>
+              <span className="font-bold">HURRY UP! {timeLeft}s</span>
+            </div>
+          </div>
+        )}
 
         {/* Role Title Card */}
         <Card className="mb-4">
@@ -187,12 +280,13 @@ export function VotingPanel({ student, onVoteSuccess }: VotingPanelProps) {
               <RadioGroup
                 value={votes[currentPosition]}
                 onValueChange={(value) => handleVoteChange(currentPosition, value)}
+                disabled={isTimeUp}
               >
                 <div className="space-y-3">
                   {groupedCandidates[currentPositionName]?.map((candidate) => (
-                    <div key={candidate.id} className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer">
-                      <RadioGroupItem value={candidate.id} id={candidate.id} className="mt-1" />
-                      <Label htmlFor={candidate.id} className="flex items-center space-x-4 cursor-pointer flex-1">
+                    <div key={candidate.id} className={`flex items-center space-x-4 p-4 border rounded-lg transition-colors cursor-pointer ${isTimeUp ? 'opacity-50 cursor-not-allowed' : 'hover:bg-accent/50'}`}>
+                      <RadioGroupItem value={candidate.id} id={candidate.id} className="mt-1" disabled={isTimeUp} />
+                      <Label htmlFor={candidate.id} className={`flex items-center space-x-4 flex-1 ${isTimeUp ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
                         <img
                           src={candidate.image_url}
                           alt={candidate.name}
@@ -223,7 +317,7 @@ export function VotingPanel({ student, onVoteSuccess }: VotingPanelProps) {
               type="button"
               variant="outline"
               onClick={handlePrevious}
-              disabled={currentStep === 0}
+              disabled={currentStep === 0 || isTimeUp}
               size="lg"
             >
               ← Previous
@@ -233,7 +327,7 @@ export function VotingPanel({ student, onVoteSuccess }: VotingPanelProps) {
               <Button
                 type="button"
                 onClick={handleNext}
-                disabled={!votes[currentPosition]}
+                disabled={!votes[currentPosition] || isTimeUp}
                 size="lg"
               >
                 Next →
